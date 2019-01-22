@@ -22,17 +22,17 @@
         "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "psr-4": {
             "App\\": "app/"
         }
     },
     "autoload-dev": {
+        "psr-4" : {
+            "Tests\\": "tests"
+        },
         "classmap": [
-            "tests/"
+            "tests/",
+            "database/"
         ]
     },
     "scripts": {

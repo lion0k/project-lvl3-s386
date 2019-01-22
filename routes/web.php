@@ -11,6 +11,18 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return view('index');
-});
+$router->get('/', [
+    'as' => 'index',  function () {
+        return view('index');
+    }
+]);
+
+$router->get('domains', [
+    'as' => 'domains.index', 'uses' => 'DomainsController@index'
+]);
+$router->get('domains/{id}', [
+    'as' => 'domains.show', 'uses' => 'DomainsController@show'
+]);
+$router->post('domains', [
+    'as' => 'domains.store', 'uses' => 'DomainsController@store'
+]);
