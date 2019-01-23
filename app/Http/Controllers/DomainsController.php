@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Validation;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 
 class DomainsController extends Controller
@@ -23,7 +20,7 @@ class DomainsController extends Controller
 
     public function index()
     {
-        $domains = DB::table('domains')->orderBy('id', 'desc')->paginate();
+        $domains = DB::table('domains')->orderBy('id', 'desc')->paginate(10);
         return view('domain.index', ['domains' => $domains]);
     }
 
@@ -35,7 +32,9 @@ class DomainsController extends Controller
 
     public function store(Request $request)
     {
+        $rules = ['name' => 'required|active_url'];
 
+        $this->validate($request, $rules);
 
         $domain = new Domain();
         $domain->name = $request->name;

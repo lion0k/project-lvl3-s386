@@ -11,10 +11,9 @@
 |
 */
 
-$router->get('/', [
-    'as' => 'index',  function () {
+$router->get('/', ['as' => 'index',  function () {
         return view('index');
-    }
+}
 ]);
 
 $router->get('domains', [
