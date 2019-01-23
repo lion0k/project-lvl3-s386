@@ -21,4 +21,11 @@ class DomainTest extends TestCase
         $this->post('/domains', ['name' => $url]);
         $this->assertResponseStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    public function testRequiredFields()
+    {
+        $url = '';
+        $this->post('/domains', ['name' => $url]);
+        $this->assertResponseStatus(\Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }
