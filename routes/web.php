@@ -19,9 +19,15 @@ $router->get('/', ['as' => 'index',  function () {
 $router->get('domains', [
     'as' => 'domains.index', 'uses' => 'DomainsController@index'
 ]);
+
 $router->get('domains/{id}', [
     'as' => 'domains.show', 'uses' => 'DomainsController@show'
 ]);
+
+$router->delete('domains/{id}', [
+    'as' => 'domains.destroy', 'uses' => 'DomainsController@destroy'
+]);
+
 $router->post('domains', [
     'as' => 'domains.store', 'uses' => 'DomainsController@store'
 ]);

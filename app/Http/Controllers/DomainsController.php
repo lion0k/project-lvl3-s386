@@ -20,7 +20,7 @@ class DomainsController extends Controller
 
     public function index()
     {
-        $domains = DB::table('domains')->paginate(5);
+        $domains = DB::table('domains')->orderBy('id', 'desc')->paginate(10);
         return view('domain.index', ['domains' => $domains]);
     }
 
@@ -38,8 +38,15 @@ class DomainsController extends Controller
 
         $domain = new Domain();
         $domain->name = $request->name;
-        $domain->save();
+        $domain->saveOrFail();
         $id = $domain->id;
         return redirect()->route('domains.show', ['id' => $id]);
+    }
+
+    public function destroy($id)
+    {
+        $domain = Domain::findOrFail($id);
+        $domain->delete();
+        return redirect()->route('domains.index');
     }
 }

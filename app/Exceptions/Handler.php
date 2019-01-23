@@ -55,6 +55,11 @@ class Handler extends ExceptionHandler
             return response(view("index", ['errors' => $error]), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+//        if ($exception instanceof \Throwable) {
+//            $error[] = $exception->getMessage();
+//            return response(view("index", ['errors' => $error]), Response::HTTP_INTERNAL_SERVER_ERROR);
+//        }
+
         return parent::render($request, $exception);
     }
 }

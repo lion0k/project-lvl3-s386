@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-8">
+    <div class="col-6">
         <p class="lead">Enter URL and press submit</p>
         <form action="{{ route('domains.store') }}" method="post">
             <div class="input-group">
