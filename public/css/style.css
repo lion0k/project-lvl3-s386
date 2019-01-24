@@ -10,7 +10,7 @@ body {
 
 #notfound {
   position: relative;
-  height: 50vh;
+  height: 70vh;
 }
 
 #notfound .notfound {
@@ -119,6 +119,18 @@ body {
   }
   .notfound .notfound-500 h1 {
     font-size: 120px;
+  }
+}
+
+@media (max-width: 1010px) {
+  .navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+  }
+
+  .navbar .navbar-collapse {
+    text-align: right;
   }
 }
 
