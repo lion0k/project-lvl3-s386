@@ -36,7 +36,27 @@ body {
   margin-bottom: 25px;
 }
 
+.notfound .notfound-500 {
+  position: relative;
+  height: 150px;
+  line-height: 150px;
+  margin-bottom: 25px;
+}
+
 .notfound .notfound-404 h1 {
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 186px;
+  font-weight: 900;
+  margin: 0px;
+  text-transform: uppercase;
+  background: url('../img/text.png');
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: cover;
+  background-position: center;
+}
+
+.notfound .notfound-500 h1 {
   font-family: 'Titillium Web', sans-serif;
   font-size: 186px;
   font-weight: 900;
@@ -91,6 +111,13 @@ body {
     line-height: 110px;
   }
   .notfound .notfound-404 h1 {
+    font-size: 120px;
+  }
+  .notfound .notfound-500 {
+    height: 110px;
+    line-height: 110px;
+  }
+  .notfound .notfound-500 h1 {
     font-size: 120px;
   }
 }

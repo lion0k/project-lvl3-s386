@@ -33,7 +33,6 @@ class DomainsController extends Controller
     public function store(Request $request)
     {
         $rules = ['name' => 'required|active_url'];
-
         $this->validate($request, $rules);
 
         $domain = new Domain();

@@ -15,15 +15,13 @@ class CheckExistProtocol
      */
     public function handle($request, Closure $next)
     {
-        if (strtolower($request->method()) === 'post') {
+        if ($request->isMethod('post') && $request->has('name')) {
             $inputData = $request->all();
-
-            if (array_key_exists('name', $inputData)) {
-                if (! preg_match("~^https?://~i", $inputData[ 'name' ])) {
-                    $inputData['name'] = "http://{$inputData['name']}";
-                }
-                $request->merge(['name' => $inputData['name']]);
+            $oldName = $inputData['name'];
+            if (! empty($oldName) && ! preg_match("~^https?://~i", $inputData[ 'name' ])) {
+                $inputData['name'] = "http://{$inputData['name']}";
             }
+            $request->merge(['name' => $inputData['name'], 'oldName' => $oldName]);
         }
 
         return $next($request);
