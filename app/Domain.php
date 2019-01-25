@@ -13,5 +13,8 @@ class Domain extends Model
      */
     protected $fillable = [
         'name',
+        'content_length',
+        'status_code',
+        'body',
     ];
 }

@@ -59,9 +59,9 @@ $app->singleton(
 |
 */
 
-$app->middleware([
- App\Http\Middleware\CheckExistProtocol::class
-]);
+//$app->middleware([
+// App\Http\Middleware\CheckExistProtocol::class
+//]);
 
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,

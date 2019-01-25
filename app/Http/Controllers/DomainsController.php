@@ -5,19 +5,14 @@ namespace App\Http\Controllers;
 use App\Domain;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use function GuzzleHttp\Psr7\parse_header;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class DomainsController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function index()
     {
         $domains = DB::table('domains')->orderBy('id', 'desc')->paginate(10);
@@ -32,11 +27,74 @@ class DomainsController extends Controller
 
     public function store(Request $request)
     {
-        $rules = ['name' => 'required|active_url'];
-        $this->validate($request, $rules);
+        $rules = ['name' => 'required|url'];
+        $name = $request->get('name');
+
+        try {
+            $this->validate($request, $rules);
+        } catch (ValidationException $exception) {
+            return response(view("index", [
+                'errors' => [$exception->getMessage()],
+                'name' => $name]), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $domainName = $request->get('name');
+        $opt = [
+            'timeout' => 5,
+            'connect_timeout' => 5,
+            'allow_redirects' => true,
+        ];
+        $client = new Client($opt);
 
         $domain = new Domain();
-        $domain->name = $request->name;
+        $domain->name = $domainName;
+        $domain->status_code = 0;
+        $domain->content_length = 0;
+
+        try {
+            $requestResult = $client->get($domainName);
+
+            $header = function ($name) use ($requestResult) {
+                if ($requestResult->hasHeader($name)) {
+                    return $requestResult->getHeader($name)[0];
+                }
+                return null;
+            };
+
+            $body = $requestResult->getBody()->getContents();
+            $statusCode = $requestResult->getStatusCode();
+
+            $contentLength = $header('Content-Length');
+            if (empty($contentLength)) {
+                $contentType = $header('Content-Type');
+                if (empty($contentType)) {
+                    $contentLength = mb_strlen($body);
+                } else {
+                    $parseCharset = parse_header($contentType);
+                    $charset = ($parseCharset[0]['charset']) ? $parseCharset[0]['charset'] : 'UTF-8';
+                    $encodingBody = mb_convert_encoding($body, 'UTF-8', $charset);
+                    $contentLength = mb_strlen($encodingBody);
+                }
+            }
+
+            $domain->content_length = $contentLength;
+            $domain->status_code = $statusCode;
+            $domain->body = $body;
+        } catch (RequestException $exception) {
+            $response = $exception->getResponse();
+            if ($response) {
+                $domain->status_code = $response->getStatusCode();
+                $domain->body = $response->getBody()->getContents();
+                $domain->content_length = mb_strlen($domain->body);
+            }
+        } catch (\Exception $exception) {
+            $error[] = $exception->getMessage();
+            $error[] = "Response status code {$exception->getCode()}";
+            return response(view("index", [
+                'errors' => $error,
+                'name' => $name]), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $domain->saveOrFail();
         $id = $domain->id;
         return redirect()->route('domains.show', ['id' => $id]);

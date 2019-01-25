@@ -2,6 +2,8 @@
 <tr>
     <th scope="col">#</th>
     <th scope="col">Name</th>
+    <th scope="col">StatusCode</th>
+    <th scope="col">ContentLength</th>
     <th scope="col">Created at</th>
     <th scope="col">Updated at</th>
 </tr>

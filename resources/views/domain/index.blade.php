@@ -9,6 +9,8 @@
                 <tr>
                     <th scope="row">{{ $domain->id }}</th>
                     <td><a href={{ route('domains.show', ['id' => $domain->id]) }}>{{ $domain->name }}</a></td>
+                    <td>{{ $domain->status_code }}</td>
+                    <td>{{ $domain->content_length }}</td>
                     <td>{{ $domain->created_at }}</td>
                     <td>{{ $domain->updated_at }}</td>
                     <td>

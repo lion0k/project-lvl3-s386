@@ -4,7 +4,7 @@
         <form action="{{ route('domains.store') }}" method="post">
             <div class="input-group">
                 <input name="name" type="text" class="form-control" placeholder="http://example.com" aria-label="Test term"
-                       aria-describedby="basic-addon" value="@isset($oldName){{ $oldName }}@endisset">
+                       aria-describedby="basic-addon" value="@isset($name){{ $name }}@endisset">
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="submit">Submit</button>
                 </div>

@@ -50,33 +50,6 @@ class Handler extends ExceptionHandler
             return response(view("errors.404"), Response::HTTP_NOT_FOUND);
         }
 
-        if ($exception instanceof ValidationException) {
-            $error[] = $exception->getMessage();
-
-            $getDataFromRequest = function ($key, $default = '') use ($request) {
-                return ($request->has($key)) ? $request->get($key) : $default;
-            };
-
-            $oldName = $getDataFromRequest('oldName');
-            $name = $getDataFromRequest('name');
-            $info = ', use for example http://example.com';
-            if (empty($name)) {
-                $error[] = "URL is empty{$info}";
-            } else {
-                $error[] = "This URL <b>{$oldName}</b> is not correct{$info}";
-            }
-
-            return response(view("index", [
-                'errors' => $error,
-                'oldName' => $oldName,
-                'name' => $name]), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-//        if ($exception instanceof \Throwable) {
-//            $error[] = $exception->getMessage();
-//            return response(view("index", ['errors' => $error]), Response::HTTP_INTERNAL_SERVER_ERROR);
-//        }
-
         if (env('APP_DEBUG', false)) {
             return parent::render($request, $exception);
         }
