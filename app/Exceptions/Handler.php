@@ -50,10 +50,11 @@ class Handler extends ExceptionHandler
             return response(view("errors.404"), Response::HTTP_NOT_FOUND);
         }
 
-        if (env('APP_DEBUG', false)) {
-            return parent::render($request, $exception);
-        }
+//        if (env('APP_DEBUG', false)) {
+//            return parent::render($request, $exception);
+//        }
 
-        return response(view("errors.500"), Response::HTTP_INTERNAL_SERVER_ERROR);
+//        return response(view("errors.500"), Response::HTTP_INTERNAL_SERVER_ERROR);
+        return parent::render($request, $exception);
     }
 }
