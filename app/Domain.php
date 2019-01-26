@@ -16,5 +16,8 @@ class Domain extends Model
         'content_length',
         'status_code',
         'body',
+        'h1',
+        'keywords',
+        'description',
     ];
 }

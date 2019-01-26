@@ -39,17 +39,39 @@ class DomainTest extends TestCase
         $this->seeInDatabase('domains', ['name' => $url, 'status_code' => 0]);
     }
 
-    public function testGuzzle404Error()
+    public function testGuzzleAddDomain()
     {
         $name = 'http://yandex.ru/oi3n911ndn230awh8dhqu20nd2mq029mdq2md-q';
-        $mock = new MockHandler([ new Response() ]);
+        $mock = new MockHandler([ new Response(Resp::HTTP_OK, ['Content-Length' => 8], 'sometext') ]);
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->app->instance(Client::class, $client);
-        $parameters = [
-            'name' => $name
+        $expectedParameters = [
+            'name' => $name,
+            'body' => 'sometext',
+            'status_code' => Resp::HTTP_OK,
+            'content_length' => 8
         ];
-        $this->post("domains", $parameters, []);
-        $this->seeInDatabase("domains", ['status_code' => Resp::HTTP_NOT_FOUND, 'name' => $name]);
+        $this->post("/domains", ['name' => $name], []);
+        $this->seeInDatabase("domains", $expectedParameters);
+    }
+
+    public function testSEOGuzzleAddDomain()
+    {
+        $name = 'http://yandex.ru/oi3n911ndn230awh8dhqu20nd2mq029mdq2md-q';
+        $body = file_get_contents('tests/fixtures/example.html');
+        $mock = new MockHandler([ new Response(Resp::HTTP_OK, [], $body) ]);
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+        $this->app->instance(Client::class, $client);
+        $expectedParameters = [
+            'name' => $name,
+            'status_code' => Resp::HTTP_OK,
+            'h1' => 'Hello World',
+            'keywords' => 'keywords',
+            'description' => 'description'
+        ];
+        $this->post("/domains", ['name' => $name], []);
+        $this->seeInDatabase("domains", $expectedParameters);
     }
 }

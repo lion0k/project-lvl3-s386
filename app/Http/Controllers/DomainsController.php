@@ -10,9 +10,17 @@ use GuzzleHttp\Exception\RequestException;
 use function GuzzleHttp\Psr7\parse_header;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use DiDom\Document;
 
 class DomainsController extends Controller
 {
+    protected $client;
+
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
     public function index()
     {
         $domains = DB::table('domains')->orderBy('id', 'desc')->paginate(10);
@@ -44,7 +52,7 @@ class DomainsController extends Controller
             'connect_timeout' => 5,
             'allow_redirects' => true,
         ];
-        $client = new Client($opt);
+//        $client = new Client($opt);
 
         $domain = new Domain();
         $domain->name = $domainName;
@@ -52,7 +60,7 @@ class DomainsController extends Controller
         $domain->content_length = 0;
 
         try {
-            $requestResult = $client->get($domainName);
+            $requestResult = $this->client->get($domainName, $opt);
 
             $header = function ($name) use ($requestResult) {
                 if ($requestResult->hasHeader($name)) {
@@ -77,6 +85,11 @@ class DomainsController extends Controller
                 }
             }
 
+            $document = new Document($body);
+            $domain->h1 = $document->first('h1::text()');
+            $domain->keywords = $document->first('meta[name=keywords]::attr(content)');
+            $domain->description = $document->first('meta[name=description]::attr(content)');
+
             $domain->content_length = $contentLength;
             $domain->status_code = $statusCode;
             $domain->body = $body;
@@ -94,6 +107,7 @@ class DomainsController extends Controller
                 'errors' => $error,
                 'name' => $name]), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
 
         $domain->saveOrFail();
         $id = $domain->id;
