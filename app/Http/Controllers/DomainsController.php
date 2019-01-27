@@ -38,9 +38,14 @@ class DomainsController extends Controller
     {
         $name = $request->get('name');
 
+        $messages = [
+            'required' => 'The URL field is required.',
+            'url' => "The value <strong>{$name}</strong> in the URL field is not correct. Please enter valid URL"
+        ];
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|url'
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return response(view("index", [
