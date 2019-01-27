@@ -11,6 +11,7 @@ use function GuzzleHttp\Psr7\parse_header;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use DiDom\Document;
+use Illuminate\Support\Facades\Validator;
 
 class DomainsController extends Controller
 {
@@ -35,14 +36,15 @@ class DomainsController extends Controller
 
     public function store(Request $request)
     {
-        $rules = ['name' => 'required|url'];
         $name = $request->get('name');
 
-        try {
-            $this->validate($request, $rules);
-        } catch (ValidationException $exception) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|url'
+        ]);
+
+        if ($validator->fails()) {
             return response(view("index", [
-                'errors' => [$exception->getMessage()],
+                'errors' => $validator->errors()->all(),
                 'name' => $name]), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -52,7 +54,6 @@ class DomainsController extends Controller
             'connect_timeout' => 5,
             'allow_redirects' => true,
         ];
-//        $client = new Client($opt);
 
         $domain = new Domain();
         $domain->name = $domainName;
